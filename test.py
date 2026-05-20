@@ -10,7 +10,7 @@ def reader(input):
     global numbers
 
     element = ""
-    multiplier = "."
+    multiplier = ".."
     counter = 0
     element_found = False
 
