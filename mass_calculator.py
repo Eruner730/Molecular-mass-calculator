@@ -41,7 +41,6 @@ def reader(formula):
         
         element = element[:-1]
         counter = counter - 1
-        print(element)
 
         if element == "":
             error = True
