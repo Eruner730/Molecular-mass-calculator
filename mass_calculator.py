@@ -35,7 +35,11 @@ def reader(formula):
 
     while element not in element_masses.masslist.keys():
 
-        if element[-1] != element[-1].upper():
+        try:
+            if element[-1] != element[-1].upper():
+                error = True
+                break
+        except Exception:
             error = True
             break
         
