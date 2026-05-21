@@ -1,41 +1,51 @@
 import element_masses
 
-numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
 user_input = input("Formula: ")
 
 mass = 0
 
-def reader(input):
-    global numbers
+def reader(formula):
 
     element = ""
     multiplier = ""
     counter = 0
     element_found = False
+    error = False
+    
+    for i in formula:
+        try:
+            i = int(i)
+        except ValueError:
+            if element_found == False:
+                element = element + i
+                counter = counter + 1
 
-    for i in input:
-        if i not in numbers and element_found == False:
-            element = element + i   
-
-        elif i in numbers:
-            element_found = True
-            multiplier = multiplier + i
-
+            else:
+                break
         else:
-            break
-        counter = counter + 1
+            element_found = True
+            i = str(i)
+            multiplier = multiplier + i
+            counter = counter + 1
 
-    if multiplier == "":
-        multiplier = "1"
+
+    if element not in element_masses.masslist.keys():
+        counter = counter - len(multiplier)
+        multiplier = 1
 
     while element not in element_masses.masslist.keys():
         element = element[:-1]
         counter = counter - 1
+        if element == "":
+            error == True
+            break
+
+
+    if multiplier == "":
         multiplier = 1
 
-    print(element)
-    return [element, int(multiplier), int(counter)]
+    
+    return [element, int(multiplier), counter, error]
 
 
 def calculator(element, multiplier):
