@@ -34,10 +34,17 @@ def reader(formula):
         multiplier = 1
 
     while element not in element_masses.masslist.keys():
+
+        if element[-1] != element[-1].upper():
+            error = True
+            break
+        
         element = element[:-1]
         counter = counter - 1
+        print(element)
+
         if element == "":
-            error == True
+            error = True
             break
 
 
