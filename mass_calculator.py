@@ -54,22 +54,18 @@ def calculator(element, multiplier):
 
     element_mass = 0
 
-    if element in element_masses.masslist:
-        element_mass = element_masses.masslist.get(element)
+    element_mass = element_masses.masslist.get(element)
 
 
     mass = mass + element_mass * multiplier
 
 
-def cutter(counter):
-    global user_input
 
-    user_input = user_input[counter:]
-
-
-if user_input != "":
-    calculator(reader(user_input)[0],reader(user_input)[1])
-    cutter(reader(user_input)[2])
-
-
+while user_input != "":
+    if reader(user_input)[3] == False:
+        calculator(reader(user_input)[0], reader(user_input)[1])
+        user_input = user_input[reader(user_input)[2]:]
+    else:
+        print("Error")
+        break
 print(mass)
