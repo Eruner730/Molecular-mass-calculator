@@ -46,11 +46,6 @@ def reader(formula):
         element = element[:-1]
         counter = counter - 1
 
-        if element == "":
-            error = True
-            break
-
-
     if multiplier == "":
         multiplier = 1
 
