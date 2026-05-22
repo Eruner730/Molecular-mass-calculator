@@ -91,3 +91,5 @@ Formula: """))
 while user_input != "":
     process(user_input)
     user_input = str(input("Formula: "))
+
+print("Process ended")
