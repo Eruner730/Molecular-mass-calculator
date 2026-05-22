@@ -1,7 +1,5 @@
 import element_masses
 
-user_input = input("Formula: ")
-
 mass = 0
 
 def reader(formula):
@@ -65,12 +63,31 @@ def calculator(element, multiplier):
     mass = mass + element_mass * multiplier
 
 
+def process(user_input):
+
+    global mass
+    output = ""
+
+    while user_input != "":
+        if reader(user_input)[3] == False:
+            calculator(reader(user_input)[0], reader(user_input)[1])
+            user_input = user_input[reader(user_input)[2]:]
+        else:
+            output = "Error"
+            break
+
+    if output != "Error":
+        output = mass
+    
+    mass = 0
+
+    print(output)
+
+user_input = str(input(
+"""
+Insert your formula, if you want to end the program, press enter
+Formula: """))
 
 while user_input != "":
-    if reader(user_input)[3] == False:
-        calculator(reader(user_input)[0], reader(user_input)[1])
-        user_input = user_input[reader(user_input)[2]:]
-    else:
-        print("Error")
-        break
-print(mass)
+    process(user_input)
+    user_input = str(input("Formula: "))
