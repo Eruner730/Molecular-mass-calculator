@@ -238,20 +238,19 @@ def process(user_input):
     output = ""
 
     while ("(" or ")") in user_input:
-        print("Debracketer input: " + user_input)
+        
         if debracketer(user_input)[1] == False:
             user_input = debracketer(user_input)[0]
         else:
             output = "Error"
             break
-        print("Debracketer output: " + user_input)
-
+       
     while user_input != "":
         if reader(user_input)[3] == False:
             calculator(reader(user_input)[0], reader(user_input)[1])
-            print("Cutter input: " + user_input)
+            
             user_input = user_input[reader(user_input)[2]:]
-            print("Cutter output: " + user_input)
+           
         else:
             output = "Error"
             break
