@@ -1,59 +1,67 @@
 import element_masses
 
 mass = 0
+errorSequence = ""
 
 def reader(formula):
-
+    global errorSequence
     element = ""
     multiplier = ""
     counter = 0
     element_found = False
     error = False
-    
+    place = -1
+
     for i in formula:
+        place = place + 1
         try:
             i = int(i)
         except ValueError:
             if element_found == False:
-                element = element + i
-                counter = counter + 1
+                if (len(formula) - place) != 1:
+                    if (i + formula[place + 1]) in element_masses.masslist.keys():
+                        element = i + formula[place + 1]
+                        element_found = True
+                    elif i in element_masses.masslist.keys():
+                        element = i
+                        element_found = True
+                    else:
+                        errorSequence = errorSequence + "1"
+                        error = True
 
+                elif i in element_masses.masslist.keys():
+                        element = i
+                        element_found = True
+
+                else:
+                    errorSequence = errorSequence + "2"
+                    error = True
+            
+            elif (len(element)) == 2 and (element[-1] == i) and place == 1: # So the loop doesn't break with the second letter of a 2 letter element
+                pass
+                        
             else:
                 break
         else:
             element_found = True
             i = str(i)
             multiplier = multiplier + i
-            counter = counter + 1
 
-
-    if element not in element_masses.masslist.keys():
-        counter = counter - len(multiplier)
-        multiplier = 1
-
-    while element not in element_masses.masslist.keys():
-
-        try:
-            if element[-1] != element[-1].upper():
-                error = True
-                break
-        except Exception:
-            error = True
-            break
-        
-        element = element[:-1]
-        counter = counter - 1
+    counter = len(element) + len(multiplier)
 
     if multiplier == "":
         multiplier = 1
+
 
     
     return [element, int(multiplier), counter, error]
 
 def debracketer(formula):
     error = False
+    global errorSequence
 
     if ("(" and ")") not in formula:
+        errorSequence = errorSequence + "3"
         error = True
 
     startPoint = formula.find("(")
@@ -96,12 +104,12 @@ def debracketer(formula):
     elementMultiplierFound = False
 
     if insideBrackets == "":
+        errorSequence = errorSequence + "4"
         error = True
 
 
     for e in insideBrackets:
         place = place + 1
-
         try:
             int(e)
 
@@ -110,6 +118,14 @@ def debracketer(formula):
                 # Checks if the letter isn't part of a 2 letter element, that't been detected in the last cycle
             # If it isn't, it means that the element that the coeficient was already found or that there wasn't a coeficient mentioned - it's 1
                 elementMultiplierFound = True
+
+            elif (elementFound == True) and (e == element[-1]) and ((len(insideBrackets) - place) != 1): # Prevents error message when e is a part of a 2 letter element ... see above 
+                #len.. added because otherwise it checks of for 1 letter elements automatically              
+                pass
+
+            elif (elementFound == True) and (e == element[-1]) and ((len(insideBrackets) - place) == 1): #So it works when the insideBrackets ends with a 2 letter element
+                elementMultiplierFound = True
+            
 
             elif (len(insideBrackets) - place) != 1: # Checks if e isn't the last character of inBrackets - prevents out of range error
 
@@ -121,12 +137,14 @@ def debracketer(formula):
                     element = e
                     elementFound = True
 
-            elif (elementMultiplierFound == False) and (e in element_masses.masslist.keys()): #Detects 1 letter elements
+            elif (elementFound == False) and (elementMultiplierFound == False) and (e in element_masses.masslist.keys()): #Detects 1 letter elements
                 element = e
                 elementFound = True
 
 
+
             else:
+                errorSequence = errorSequence + "5"
                 error = True
 
             
@@ -140,6 +158,9 @@ def debracketer(formula):
                 elementMultiplierFound = True
 
    
+        if elementFound == True and (len(insideBrackets) - place == 1) and place == 0: # So it works if the is only 1 character inside brackets
+            elementMultiplierFound = True
+
 
         if ((elementFound == True) and (elementMultiplierFound == True)):
             if elementMultiplier != "":
@@ -147,7 +168,6 @@ def debracketer(formula):
 
             else: # When the coeficient isn't mentioned - it is 1
                 replaceWith = replaceWith + element + str(bracketMultiplier)
-
             # Resets the loop
 
             elementFound = False
@@ -155,7 +175,8 @@ def debracketer(formula):
             element = ""
             elementMultiplier = ""
 
-            # NOW the loop should be in an element -> I need to detect it - same code as above
+            # NOW the loop should be in an element -> I need to detect it - same code as above 
+            # or it's in the multiplier - inBrackets ends with a digit
 
             if (len(insideBrackets) - place) != 1: 
 
@@ -171,11 +192,17 @@ def debracketer(formula):
                 element = e
                 elementFound = True
 
-            else:
-                error = True
+            else: 
+                try: # For error to not occur if inBrackets ended with a digit
+                    int(e)
+                except ValueError:
+                    pass
 
-            if (elementFound == True) and ((len(insideBrackets) - place) == 1):
+            if (elementFound == True) and ((len(insideBrackets) - place) == 1) and place != 0: # Prevents duplication if it's the first and only character inside brackets
+                # If the last character is an element
+                # It's an element with a coeficient of 1
                 replaceWith = replaceWith + element + str(bracketMultiplier)
+
 
     #############
     # The end of inBracket changer function 
@@ -190,8 +217,6 @@ def debracketer(formula):
     else:
         formula = formula[:endPoint+1] + formula[endPoint+1:]
         formula = formula.replace(formula[startPoint:endPoint+1], replaceWith, 1)
-
-   
 
     return[formula, error]
 
@@ -213,30 +238,35 @@ def process(user_input):
     output = ""
 
     while ("(" or ")") in user_input:
+        print("Debracketer input: " + user_input)
         if debracketer(user_input)[1] == False:
             user_input = debracketer(user_input)[0]
         else:
             output = "Error"
             break
+        print("Debracketer output: " + user_input)
 
     while user_input != "":
         if reader(user_input)[3] == False:
             calculator(reader(user_input)[0], reader(user_input)[1])
+            print("Cutter input: " + user_input)
             user_input = user_input[reader(user_input)[2]:]
+            print("Cutter output: " + user_input)
         else:
             output = "Error"
             break
 
-    if output != "Error":
+    if output != "Error" :
         output = mass
-    
+    else:
+        output = output + " number " + str(errorSequence)
+
     mass = 0
 
     print(output)
 
 user_input = str(input(
-"""
-Insert your formula, if you want to end the program, press enter
+"""Insert your formula, if you want to end the program, press enter
 Formula: """))
 
 while user_input != "":
