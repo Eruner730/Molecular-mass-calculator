@@ -126,7 +126,6 @@ def debracketer(formula):
                 elementFound = True
 
 
-
             else:
                 error = True
 
