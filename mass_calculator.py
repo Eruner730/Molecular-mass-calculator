@@ -3,6 +3,12 @@ import element_masses
 mass = 0
 errorNumber = 0
 
+def editUserInput(user_input):
+    user_input = user_input.replace("[", "(")
+    user_input = user_input.replace("]", ")")
+    user_input = user_input.replace(" ", "")
+    return(user_input)
+
 def reader(formula):
     global errorNumber
     element = ""
@@ -303,9 +309,7 @@ def process(user_input):
     global mass
     output = ""
 
-    if ("[" in user_input) or ("]" in user_input):
-        user_input = user_input.replace("[", "(")
-        user_input = user_input.replace("]", ")")
+    user_input = editUserInput(user_input)
 
     while ("(" or ")") in user_input:
         
