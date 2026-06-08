@@ -303,6 +303,10 @@ def process(user_input):
     global mass
     output = ""
 
+    if ("[" in user_input) or ("]" in user_input):
+        user_input = user_input.replace("[", "(")
+        user_input = user_input.replace("]", ")")
+
     while ("(" or ")") in user_input:
         
         if debracketer(user_input)[1] == False:
