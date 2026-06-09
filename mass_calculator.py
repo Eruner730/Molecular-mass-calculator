@@ -4,15 +4,20 @@ mass = 0
 errorNumber = 0
 
 def editUserInput(user_input):
+    global errorNumber
     user_input = user_input.replace("[", "(")
     user_input = user_input.replace("]", ")")
     user_input = user_input.replace(" ", "")
 
+    if user_input.count("*") > 1:
+        errorNumber += 9
+        return["xxx", True]
 
     asterixFound = False
     asterixMultiplier = ""
     asterixMultiplierFound = False
     afterAsterix = ""
+
     if "*" in user_input:
         for i in user_input:
             if i == "*":
@@ -35,7 +40,7 @@ def editUserInput(user_input):
         user_input = user_input + "(" + afterAsterix + ")" + asterixMultiplier
                 
 
-    return(user_input)
+    return[user_input, False]
 
 def reader(formula):
     global errorNumber
@@ -347,9 +352,12 @@ def process(user_input):
     global mass
     output = ""
 
-    user_input = editUserInput(user_input)
+    if editUserInput(user_input)[1] == True:
+        output = "Error"
+    else:
+        user_input = editUserInput(user_input)[0]
 
-    while ("(" or ")") in user_input:
+    while (("(" or ")") in user_input) and (output == ""):
         
         if debracketer(user_input)[1] == False:
             user_input = debracketer(user_input)[0]
@@ -357,7 +365,7 @@ def process(user_input):
             output = "Error"
             break
        
-    while user_input != "":
+    while user_input != "" and output == "":
         if reader(user_input)[3] == False:
             calculator(reader(user_input)[0], reader(user_input)[1])
             
