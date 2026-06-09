@@ -379,6 +379,7 @@ def process(user_input):
         output = mass
     else:
         output = output + " number " + str(errorNumber)
+        errorNumber = 0
 
     mass = 0
 
