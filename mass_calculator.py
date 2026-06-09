@@ -7,6 +7,34 @@ def editUserInput(user_input):
     user_input = user_input.replace("[", "(")
     user_input = user_input.replace("]", ")")
     user_input = user_input.replace(" ", "")
+
+
+    asterixFound = False
+    asterixMultiplier = ""
+    asterixMultiplierFound = False
+    afterAsterix = ""
+    if "*" in user_input:
+        for i in user_input:
+            if i == "*":
+                asterixFound = True
+            elif asterixFound == True:
+                try:
+                    int(i)
+
+                except ValueError:
+                    asterixMultiplierFound = True
+
+                else:
+                    if asterixMultiplierFound == False:
+                        asterixMultiplier += str(i)
+
+            if asterixFound == True and asterixMultiplierFound == True:
+                afterAsterix += i
+            
+        user_input = user_input[:user_input.find("*")]
+        user_input = user_input + "(" + afterAsterix + ")" + asterixMultiplier
+                
+
     return(user_input)
 
 def reader(formula):
@@ -16,6 +44,16 @@ def reader(formula):
     counter = 0
     element_found = False
     place = -1
+
+    try:
+        int(formula[0])
+
+    except ValueError:
+        pass
+
+    else:
+        errorNumber += 8
+        return ["x", 1, 1, True]
 
     for i in formula:
         place = place + 1
@@ -148,7 +186,7 @@ def debracketer(formula):
     bracketClosed = False
 
     if insideBrackets == "":
-        errorNumber =+ 4
+        errorNumber += 4
         return[formula, True]
 
 
